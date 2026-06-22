@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* ── MD3 Dark Surface Colors ──────────────────────────────────────────── */
+  --bg-base:     #0b1326;   /* surface / background */
+  --bg-surface:  #171f33;   /* surface-container */
+  --bg-raised:   #131b2e;   /* surface-container-low */
+  --bg-overlay:  #222a3d;   /* surface-container-high */
+  --bg-highest:  #2d3449;   /* surface-container-highest */
+  --bg-bright:   #31394d;   /* surface-bright */
+
+  /* ── Primary — cyan ───────────────────────────────────────────────────── */
+  --accent:        #a4e6ff;          /* primary */
+  --accent-dim:    #4cd6ff;          /* primary-fixed-dim */
+  --accent-container: #00d1ff;       /* primary-container */
+  --accent-glow:   rgba(164, 230, 255, 0.18);
+  --accent-muted:  rgba(164, 230, 255, 0.10);
+  --on-accent:     #003543;          /* on-primary */
+
+  /* ── Secondary — mint ────────────────────────────────────────────────── */
+  --success:           #4edea3;       /* secondary */
+  --success-muted:     rgba(78, 222, 163, 0.10);
+  --success-container: #00a572;       /* secondary-container */
+  --on-success:        #003824;       /* on-secondary */
+
+  /* ── Tertiary — warm amber ───────────────────────────────────────────── */
+  --warning:           #ffd59c;       /* tertiary */
+  --warning-dim:       #ffba49;       /* tertiary-fixed-dim */
+  --warning-container: #feb127;       /* tertiary-container */
+  --warning-muted:     rgba(255, 213, 156, 0.10);
+
+  /* ── Error ───────────────────────────────────────────────────────────── */
+  --danger:       #ffb4ab;
+  --danger-muted: rgba(255, 180, 171, 0.10);
+  --danger-container: #93000a;
+
+  /* ── Info ────────────────────────────────────────────────────────────── */
+  --info:         #4da6ff;
+  --info-muted:   rgba(77, 166, 255, 0.10);
+
+  /* ── Text ────────────────────────────────────────────────────────────── */
+  --text-primary:   #dae2fd;   /* on-surface */
+  --text-secondary: #bbc9cf;   /* on-surface-variant */
+  --text-muted:     #859399;   /* outline */
+
+  /* ── Borders ─────────────────────────────────────────────────────────── */
+  --border:       #3c494e;   /* outline-variant */
+  --border-focus: #a4e6ff;   /* primary */
+
+  /* ── Tier / difficulty ───────────────────────────────────────────────── */
+  --diff-beginner:     #4edea3;
+  --diff-intermediate: #ffd59c;
+  --diff-experienced:  #ffb4ab;
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  --font-ui:   'Geist', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-code: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Focus ──────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ── Links ──────────────────────────────────────────────────────────────── */
+a { color: inherit; text-decoration: none; }
+
+/* ── Glass panel ────────────────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(19, 27, 46, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(60, 73, 78, 0.5);
+}
+
+/* ── Material Symbols ───────────────────────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* ── Label caps ─────────────────────────────────────────────────────────── */
+.label-caps {
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* ── Tier card borders ──────────────────────────────────────────────────── */
+.card-beginner     { border-left: 3px solid var(--diff-beginner); }
+.card-intermediate { border-left: 3px solid var(--diff-intermediate); }
+.card-experienced  { border-left: 3px solid var(--diff-experienced); }
+
+/* ── Editor gutter dot-grid ─────────────────────────────────────────────── */
+.editor-gutter-bg {
+  background-image: radial-gradient(circle, rgba(164,230,255,0.12) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px var(--accent-glow); }
+  50%       { box-shadow: 0 0 24px rgba(164,230,255,0.4), 0 0 40px var(--accent-glow); }
+}
+.btn-running { animation: pulse-glow 1.2s ease-in-out infinite; }
+
+@keyframes slide-in {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+.drawer-open { animation: slide-in 0.2s ease-out forwards; }
+
+@keyframes slide-down {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.banner-enter { animation: slide-down 0.25s ease-out forwards; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fade-in 0.3s ease-out forwards; }
+
+/* ── Score ring ─────────────────────────────────────────────────────────── */
+.score-ring {
+  stroke-dasharray: 251;
+  stroke-dashoffset: 251;
+  transition: stroke-dashoffset 0.8s ease-in-out;
+}
+
+/* ── Form inputs ────────────────────────────────────────────────────────── */
+input, textarea, select {
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-ui);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ── Contribution heatmap cell ──────────────────────────────────────────── */
+.contribution-cell {
+  aspect-ratio: 1/1;
+  border-radius: 2px;
+}
+
+/* ── Tier progress bar glow ─────────────────────────────────────────────── */
+.progress-fill-accent {
+  box-shadow: 0 0 8px rgba(164,230,255,0.35);
+}
