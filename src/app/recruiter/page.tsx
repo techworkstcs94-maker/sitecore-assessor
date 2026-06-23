@@ -148,12 +148,6 @@ export default function RecruiterLoginPage() {
             </form>
           </div>
 
-          <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '20px' }}>
-            Set{' '}
-            <code style={{ background: 'var(--bg-raised)', padding: '1px 6px', borderRadius: '4px', color: 'var(--accent)', fontFamily: 'var(--font-code)', fontSize: '0.8rem' }}>RECRUITER_PASSWORD</code>
-            {' '}in{' '}
-            <code style={{ background: 'var(--bg-raised)', padding: '1px 6px', borderRadius: '4px', color: 'var(--accent)', fontFamily: 'var(--font-code)', fontSize: '0.8rem' }}>.env.local</code>
-          </p>
         </div>
       </main>
     </div>
