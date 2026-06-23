@@ -16,7 +16,6 @@ import PreviewPanel from '@/components/assessment/PreviewPanel';
 import SessionTimer from '@/components/assessment/SessionTimer';
 import ProgressBar from '@/components/assessment/ProgressBar';
 import AntiCheatBanner from '@/components/assessment/AntiCheatBanner';
-import WebcamProctor from '@/components/assessment/WebcamProctor';
 import Modal from '@/components/ui/Modal';
 import { TierBadge } from '@/components/ui/Badge';
 import Spinner from '@/components/ui/Spinner';
@@ -193,13 +192,6 @@ export default function SessionPage() {
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-base)', overflow: 'hidden' }}>
       <AntiCheatBanner message={warningMessage} onDismiss={() => setWarningMessage(null)} />
-
-      <WebcamProctor
-        active={!!store.candidate && !store.sessionFlagged}
-        onEvent={({ type, severity, detail }) => {
-          monitorRef.current?.reportEvent(type, severity, detail);
-        }}
-      />
 
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
       <div style={{
