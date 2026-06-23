@@ -119,6 +119,20 @@ export default function DashboardPage() {
               </span>
             )}
             <button
+              onClick={() => {
+                const token = sessionStorage.getItem('recruiter_token');
+                window.open(`/api/recruiter/solutions-pdf?token=${encodeURIComponent(token ?? '')}`, '_blank');
+              }}
+              style={{
+                background: 'var(--accent-muted)', border: '1px solid rgba(164,230,255,0.3)',
+                borderRadius: '8px', color: 'var(--accent)',
+                padding: '6px 16px', cursor: 'pointer',
+                fontSize: '0.85rem', fontFamily: 'var(--font-ui)', fontWeight: 600,
+              }}
+            >
+              ↓ Solutions PDF
+            </button>
+            <button
               onClick={() => { sessionStorage.removeItem('recruiter_token'); router.push('/recruiter'); }}
               style={{
                 background: 'none', border: '1px solid var(--border)',

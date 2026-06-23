@@ -1,14 +1,58 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useSessionStore } from '@/store/sessionStore';
 import { TierBadge } from '@/components/ui/Badge';
 import { scorePercent } from '@/lib/utils';
+import { getChallengesByTier } from '@/data/challenges';
+import Spinner from '@/components/ui/Spinner';
 
 export default function CompletePage() {
   const store = useSessionStore();
+  const params = useParams();
+  const token = params?.token as string;
+  const [loadError, setLoadError] = useState(false);
+
+  // Block back navigation to session page
+  useEffect(() => {
+    window.history.pushState({ completeLock: true }, '');
+    const onPopState = () => {
+      window.history.pushState({ completeLock: true }, '');
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  // Reload session data from API if store was wiped by a page refresh
+  useEffect(() => {
+    if (store.candidate || !token) return;
+    fetch(`/api/session/${token}`)
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(data => {
+        store.setCandidate(data);
+        const challenges = getChallengesByTier(data.level);
+        store.setChallenges(challenges);
+        if (data.submissions) {
+          (data.submissions as unknown[]).forEach(s => {
+            const sub = s as Parameters<typeof store.setSubmission>[1];
+            store.setSubmission(sub.challenge_id, sub);
+          });
+        }
+      })
+      .catch(() => setLoadError(true));
+  }, [token]);
+
   const candidate = store.candidate;
+
+  if (!candidate && !loadError) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-base)' }}>
+        <Spinner size={40} />
+      </div>
+    );
+  }
 
   if (!candidate) {
     return (

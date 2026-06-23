@@ -16,6 +16,7 @@ import PreviewPanel from '@/components/assessment/PreviewPanel';
 import SessionTimer from '@/components/assessment/SessionTimer';
 import ProgressBar from '@/components/assessment/ProgressBar';
 import AntiCheatBanner from '@/components/assessment/AntiCheatBanner';
+import WebcamProctor from '@/components/assessment/WebcamProctor';
 import Modal from '@/components/ui/Modal';
 import { TierBadge } from '@/components/ui/Badge';
 import Spinner from '@/components/ui/Spinner';
@@ -32,10 +33,16 @@ export default function SessionPage() {
   const [flaggedModal, setFlaggedModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const monitorRef = useRef<AntiCheatMonitor | null>(null);
+  const sessionFinishedRef = useRef(false);
 
   const currentChallenge = store.challenges.find(c => c.id === store.currentChallengeId) ?? null;
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem(`session-complete-${token}`)) {
+      router.replace(`/session/${token}/complete`);
+      return;
+    }
+
     async function load() {
       try {
         const res = await fetch(`/api/session/${token}`);
@@ -89,6 +96,35 @@ export default function SessionPage() {
     monitorRef.current = monitor;
     return () => monitor.stop();
   }, [store.candidate?.id]);
+
+  // ── Navigation lock ──────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!store.candidate) return;
+
+    // Push a dummy history entry so the first back-press hits it, not leaves the page
+    window.history.pushState({ sessionLock: true }, '');
+
+    const onPopState = () => {
+      if (sessionFinishedRef.current) return;
+      // Re-push to keep them on the page
+      window.history.pushState({ sessionLock: true }, '');
+      monitorRef.current?.reportEvent('NAVIGATION_ATTEMPT', 'medium', 'Back/forward navigation attempted during assessment');
+    };
+
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (sessionFinishedRef.current) return;
+      e.preventDefault();
+      e.returnValue = '';
+      monitorRef.current?.reportEvent('NAVIGATION_ATTEMPT', 'high', 'Candidate attempted to refresh or close the tab');
+    };
+
+    window.addEventListener('popstate', onPopState);
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    };
+  }, [store.candidate]);
 
   const handleRunTests = useCallback(() => {
     if (!currentChallenge || store.isRunning || store.sessionFlagged) return;
@@ -158,6 +194,13 @@ export default function SessionPage() {
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-base)', overflow: 'hidden' }}>
       <AntiCheatBanner message={warningMessage} onDismiss={() => setWarningMessage(null)} />
 
+      <WebcamProctor
+        active={!!store.candidate && !store.sessionFlagged}
+        onEvent={({ type, severity, detail }) => {
+          monitorRef.current?.reportEvent(type, severity, detail);
+        }}
+      />
+
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
       <div style={{
         height: '52px',
@@ -199,9 +242,11 @@ export default function SessionPage() {
           )}
           <button
             onClick={() => {
+              sessionFinishedRef.current = true;
               monitorRef.current?.finish();
               if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-              router.push(`/session/${token}/complete`);
+              localStorage.setItem(`session-complete-${token}`, 'true');
+              router.replace(`/session/${token}/complete`);
             }}
             style={{
               background: 'none', border: '1px solid var(--border)',

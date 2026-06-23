@@ -165,6 +165,10 @@ export class AntiCheatMonitor {
     }, 5 * 60 * 1000);
   }
 
+  reportEvent(type: CheatEventType, severity: CheatSeverity, detail?: string) {
+    this.log(type, severity, detail);
+  }
+
   logMultipleSubmissions(challengeId: string, attemptNumber: number) {
     if (attemptNumber > 3) {
       this.log('MULTIPLE_SUBMISSIONS', 'medium', `Challenge ${challengeId} submitted ${attemptNumber} times`);

@@ -23,7 +23,14 @@ export type CheatEventType =
   | 'IDLE_TOO_LONG'
   | 'MULTIPLE_SUBMISSIONS'
   | 'EXTERNAL_RESOURCE'
-  | 'SESSION_FLAGGED';
+  | 'SESSION_FLAGGED'
+  | 'CAMERA_DENIED'
+  | 'NO_FACE_DETECTED'
+  | 'MULTIPLE_FACES_DETECTED'
+  | 'LOOKING_AWAY'
+  | 'PHONE_SUSPECTED'
+  | 'GAZE_OFF_SCREEN'
+  | 'NAVIGATION_ATTEMPT';
 
 export interface ChallengeTest {
   id: string;
